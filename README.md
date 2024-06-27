@@ -25,7 +25,7 @@ Dies ist eine einfache Software Asset Management (SAM) Anwendung, die Programme 
 1. Klone das Repository:
 
     ```bash
-    git clone https://github.com/dein-benutzername/sam.git
+    git clone https://github.com/TobiX586/sam.git
     cd sam
     ```
 
