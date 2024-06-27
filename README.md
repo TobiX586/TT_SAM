@@ -151,7 +151,7 @@ while ($true) {
 
     foreach ($program in $programsToMonitor) {
         $programName = $program.name
-        $processName = $programName.Split('.')[0]  # Entfernt die Erweiterung .exe
+        $processName = $programName.Split('.')[0]
 
         Write-Host "Checking process: $processName"
         Write-Host "Current startTimes: $($startTimes.Keys -join ', ')"
