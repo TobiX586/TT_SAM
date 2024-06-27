@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Asset Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        form { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Software Asset Management</h1>
+
+    <h2>Programme hinzufügen</h2>
+    <form id="program-form">
+        <input type="text" id="program-name" placeholder="Programmname" required>
+        <input type="text" id="program-description" placeholder="Beschreibung">
+        <button type="submit">Hinzufügen</button>
+    </form>
+
+    <h2>Überwachte Programme</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Beschreibung</th>
+                <th>Aktionen</th>
+            </tr>
+        </thead>
+        <tbody id="programs-table">
+            <!-- Dynamischer Inhalt -->
+        </tbody>
+    </table>
+
+    <h2>Nutzungsdaten</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User ID</th>
+                <th>Software ID</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody id="usage-table">
+            <!-- Dynamischer Inhalt -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/programs')
+                .then(response => response.json())
+                .then(data => {
+                    const programsTable = document.getElementById('programs-table');
+                    programsTable.innerHTML = ''; // Clear existing rows
+                    data.programs.forEach((program, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${index + 1}</td><td>${program.name}</td><td>${program.description}</td><td><button onclick="deleteProgram('${program.name}')">Löschen</button></td>`;
+                        programsTable.appendChild(row);
+                    });
+                });
+
+            fetch('/api/usage')
+                .then(response => response.json())
+                .then(data => {
+                    const usageTable = document.getElementById('usage-table');
+                    usageTable.innerHTML = ''; // Clear existing rows
+                    data.usages.forEach(usage => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${usage.id}</td><td>${usage.user_id}</td><td>${usage.software_id}</td><td>${usage.start_time}</td><td>${usage.end_time}</td><td>${usage.duration}</td>`;
+                        usageTable.appendChild(row);
+                    });
+                });
+
+            document.getElementById('program-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const programName = document.getElementById('program-name').value;
+                const programDescription = document.getElementById('program-description').value;
+                fetch('/api/programs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: programName, description: programDescription }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    location.reload();
+                });
+            });
+        });
+
+        function deleteProgram(programName) {
+            fetch('/api/programs', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: programName }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
+``
